@@ -29,14 +29,14 @@ export default function LoginRoute({}: Route.ComponentProps) {
         </CardHeader>
 
         <CardContent>
-          <Form method="post" className="space-y-5">
+          <Form method="POST" className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="username"
-                type="text"
-                name="username"
-                placeholder="Enter your username"
+                id="email"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
                 required
               />
             </div>
@@ -70,4 +70,20 @@ export default function LoginRoute({}: Route.ComponentProps) {
       </Card>
     </main>
   );
+}
+
+export async function clientAction({ request }: Route.ClientActionArgs) {
+  const formData = await request.formData();
+
+  const email = formData.get("email")?.toString();
+  const password = formData.get("password")?.toString();
+
+  const registerBody = {
+    email,
+    password,
+  };
+
+  console.log(registerBody);
+
+  return null;
 }
