@@ -29,7 +29,7 @@ export default function RegisterRoute({}: Route.ComponentProps) {
         </CardHeader>
 
         <CardContent>
-          <Form method="post" className="space-y-5">
+          <Form method="POST" className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input
@@ -92,4 +92,24 @@ export default function RegisterRoute({}: Route.ComponentProps) {
       </Card>
     </main>
   );
+}
+
+export async function clientAction({ request }: Route.ClientActionArgs) {
+  const formData = await request.formData();
+
+  const username = formData.get("username")?.toString();
+  const email = formData.get("email")?.toString();
+  const fullName = formData.get("fullName")?.toString();
+  const password = formData.get("password")?.toString();
+
+  const registerBody = {
+    username,
+    email,
+    fullName,
+    password,
+  };
+
+  console.log(registerBody);
+
+  return null;
 }
