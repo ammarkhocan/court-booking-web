@@ -1,6 +1,7 @@
 import type { Courts } from "~/modules/court/type";
 import type { Route } from "./+types/home";
 import { Button } from "~/components/ui/button";
+import { formatPrice } from "~/lib/format";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -32,6 +33,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             <li key={court.id}>
               <img src={court.imageUrl} alt={court.name} className="size-60" />
               <h2>{court.name}</h2>
+              <p>{formatPrice(court.pricePerHour)}</p>
               <Button>clickme</Button>
             </li>
           );
