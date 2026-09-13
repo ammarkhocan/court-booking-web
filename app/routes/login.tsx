@@ -1,5 +1,5 @@
 import type { Route } from "./+types/login";
-import { Form, Link } from "react-router";
+import { Form, Link, redirect } from "react-router";
 import { Label } from "~/components/ui/label";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
+import type { LoginResponse } from "~/modules/user/type";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Log In" }];
@@ -75,15 +76,24 @@ export default function LoginRoute({}: Route.ComponentProps) {
 export async function clientAction({ request }: Route.ClientActionArgs) {
   const formData = await request.formData();
 
-  const email = formData.get("email")?.toString();
-  const password = formData.get("password")?.toString();
-
-  const registerBody = {
-    email,
-    password,
+  const loginBody = {
+    email: formData.get("email")?.toString(),
+    password: formData.get("password")?.toString(),
   };
 
-  console.log(registerBody);
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_API_URL}/auth/login`,
+    {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loginBody),
+    },
+  );
 
-  return null;
+  const loginResponse: LoginResponse = await response.json();
+  console.log(loginResponse);
+
+  return redirect("/dashboard");
 }
