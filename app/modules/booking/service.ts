@@ -74,3 +74,29 @@ export async function getBookingById(id: string): Promise<Booking> {
 
   return response.json();
 }
+
+export async function cancelBooking(id: string): Promise<Booking> {
+  const token = Cookies.get("token");
+
+  if (!token) {
+    throw new Error("Silakan login terlebih dahulu.");
+  }
+
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_API_URL}/bookings/${id}/cancel`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    const error: BookingError = await response.json();
+
+    throw new Error(error.message);
+  }
+
+  return response.json();
+}
