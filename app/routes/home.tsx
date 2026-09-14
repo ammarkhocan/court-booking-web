@@ -68,8 +68,7 @@ export default function HomeRoute({ loaderData }: Route.ComponentProps) {
             <CardContent className="p-0">
               <img
                 src={
-                  featuredCourts[0]?.imageUrl ??
-                  "https://images.unsplash.com/photo-1553778263-73a83bab9b0c"
+                  "https://lre3izfqrx.ucarecd.net/c21d7cb1-602f-4387-b23c-84fa93c719cf/-/preview/1000x955/"
                 }
                 alt={featuredCourts[0]?.name ?? "Sports court"}
                 className="aspect-4/3 h-full w-full object-cover"
