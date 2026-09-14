@@ -51,3 +51,26 @@ export async function getBookings(): Promise<Booking[]> {
 
   return response.json();
 }
+
+export async function getBookingById(id: string): Promise<Booking> {
+  const token = Cookies.get("token");
+
+  if (!token) {
+    throw new Error("Silakan login terlebih dahulu.");
+  }
+
+  const response = await fetch(
+    `${import.meta.env.VITE_BACKEND_API_URL}/bookings/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("Gagal mengambil detail booking.");
+  }
+
+  return response.json();
+}

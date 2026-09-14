@@ -1,5 +1,5 @@
 import Cookies from "js-cookie";
-import { redirect } from "react-router";
+import { Link, redirect } from "react-router";
 import type { Route } from "./+types/bookings";
 import { getBookings } from "~/modules/booking/service";
 import { formatPrice, formatTime } from "~/lib/format";
@@ -62,6 +62,12 @@ export default function BookingsRoute({ loaderData }: Route.ComponentProps) {
 
                 <div>
                   <span className="text-sm font-medium">{booking.status}</span>
+                  <Link
+                    to={`/bookings/${booking.id}`}
+                    className="inline-flex h-9 items-center rounded-md border px-4 text-sm font-medium transition-colors hover:bg-muted"
+                  >
+                    Lihat Detail
+                  </Link>
                 </div>
               </div>
             </li>

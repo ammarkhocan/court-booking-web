@@ -14,6 +14,7 @@ export default [
     route("/login", "routes/login.tsx"),
     route("/dashboard", "routes/dashboard.tsx"),
     route("/bookings", "routes/bookings.tsx"),
+    route("/bookings/:id", "routes/bookings-id.tsx"),
 
     // route("/court", "routes/court.tsx"),
   ]),
