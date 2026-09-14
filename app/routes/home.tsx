@@ -1,7 +1,6 @@
 import type { Courts } from "~/modules/court/type";
 import type { Route } from "./+types/home";
-import { Button } from "~/components/ui/button";
-import { formatPrice } from "~/lib/format";
+import { CourtsGrid } from "~/modules/court/components/courts-grid";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -21,24 +20,16 @@ export async function clientLoader() {
   return { courts };
 }
 
-export default function Home({ loaderData }: Route.ComponentProps) {
+export default function HomeRoute({ loaderData }: Route.ComponentProps) {
   const { courts } = loaderData;
   return (
     <div>
-      <h1>Court Booking website</h1>
-
-      <ul className="grid grid-cols-3">
-        {courts.map((court) => {
-          return (
-            <li key={court.id}>
-              <img src={court.imageUrl} alt={court.name} className="size-60" />
-              <h2>{court.name}</h2>
-              <p>{formatPrice(court.pricePerHour)}</p>
-              <Button>clickme</Button>
-            </li>
-          );
-        })}
-      </ul>
+      <section>
+        <h1>INI HERO</h1>
+      </section>
+      <section>
+        <CourtsGrid courts={courts} />
+      </section>
     </div>
   );
 }
