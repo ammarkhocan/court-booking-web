@@ -3,6 +3,7 @@ import { Form, Link, redirect, useActionData } from "react-router";
 
 import type { Route } from "./+types/bookings-id";
 import { cancelBooking, getBookingById } from "~/modules/booking/service";
+import { getCourtById } from "~/modules/court/services/court-service";
 import { formatPrice, formatTime } from "~/lib/format";
 
 export function meta({}: Route.MetaArgs) {
@@ -18,13 +19,18 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 
   const booking = await getBookingById(params.id);
 
-  return { booking };
+  const court = await getCourtById(booking.courtId);
+
+  return {
+    booking,
+    court,
+  };
 }
 
 export default function BookingDetailRoute({
   loaderData,
 }: Route.ComponentProps) {
-  const { booking } = loaderData;
+  const { booking, court } = loaderData;
 
   const actionData = useActionData<typeof clientAction>();
 
@@ -52,6 +58,20 @@ export default function BookingDetailRoute({
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2">
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div>
+                <p className="text-sm text-muted-foreground">Nama Lapangan</p>
+
+                <p className="mt-1 font-medium">{court.name}</p>
+              </div>
+
+              <div>
+                <p className="text-sm text-muted-foreground">Jenis Olahraga</p>
+
+                <p className="mt-1 font-medium">{court.sportType}</p>
+              </div>
+            </div>
+
             <div>
               <p className="text-sm text-muted-foreground">Tanggal</p>
 
