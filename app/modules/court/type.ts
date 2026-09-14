@@ -12,3 +12,14 @@ export type Court = {
 };
 
 export type Courts = Court[];
+
+export type BookedSlot = {
+  startTime: string;
+  endTime: string;
+};
+
+export type CourtAvailability = {
+  courtId: string;
+  date: string;
+  bookedSlots: BookedSlot[];
+};
