@@ -1,4 +1,5 @@
-import { Form } from "react-router";
+import Cookies from "js-cookie";
+import { Form, Link, useActionData } from "react-router";
 import { formatPrice, formatTime } from "~/lib/format";
 import {
   getCourtAvailability,
@@ -6,6 +7,7 @@ import {
 } from "~/modules/court/services/court-service";
 import type { CourtAvailability } from "~/modules/court/type";
 import type { Route } from "./+types/courts-id";
+import { createBooking } from "~/modules/booking/service";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -43,6 +45,11 @@ export async function clientLoader({
 
 export default function CourtsRoute({ loaderData }: Route.ComponentProps) {
   const { court, availability, selectedDate } = loaderData;
+
+  const actionData = useActionData<typeof clientAction>();
+
+  const token = Cookies.get("token");
+  const isLoggedIn = Boolean(token);
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -156,6 +163,125 @@ export default function CourtsRoute({ loaderData }: Route.ComponentProps) {
           )}
         </div>
       </section>
+
+      <section className="mt-10 border-t pt-10">
+        <div className="max-w-2xl">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Buat Booking
+          </h2>
+
+          {!isLoggedIn ? (
+            <div className="mt-6 rounded-lg border p-6">
+              <p className="text-sm text-muted-foreground">
+                Silakan login terlebih dahulu untuk melakukan booking.
+              </p>
+
+              <Link
+                to="/login"
+                className="mt-4 inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+              >
+                Login untuk Booking
+              </Link>
+            </div>
+          ) : (
+            <>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Pilih waktu mulai dan selesai untuk melakukan booking.
+              </p>
+
+              <Form method="post" className="mt-6 space-y-5">
+                <input type="hidden" name="courtId" value={court.id} />
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-2">
+                    <label htmlFor="startTime" className="text-sm font-medium">
+                      Waktu Mulai
+                    </label>
+
+                    <input
+                      id="startTime"
+                      name="startTime"
+                      type="datetime-local"
+                      className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label htmlFor="endTime" className="text-sm font-medium">
+                      Waktu Selesai
+                    </label>
+
+                    <input
+                      id="endTime"
+                      name="endTime"
+                      type="datetime-local"
+                      className="h-10 w-full rounded-md border bg-background px-3 text-sm"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {actionData?.error && (
+                  <p className="text-sm text-destructive">{actionData.error}</p>
+                )}
+
+                {actionData?.success && (
+                  <p className="text-sm text-green-600">
+                    Booking berhasil dibuat.
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  className="h-10 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+                >
+                  Booking Sekarang
+                </button>
+              </Form>
+            </>
+          )}
+        </div>
+      </section>
     </div>
   );
+}
+
+export async function clientAction({ request }: Route.ClientActionArgs) {
+  const token = Cookies.get("token");
+
+  if (!token) {
+    return {
+      error: "Silakan login terlebih dahulu untuk melakukan booking.",
+    };
+  }
+
+  const formData = await request.formData();
+
+  const courtId = formData.get("courtId")?.toString();
+  const startTime = formData.get("startTime")?.toString();
+  const endTime = formData.get("endTime")?.toString();
+
+  if (!courtId || !startTime || !endTime) {
+    return {
+      error: "Semua field booking wajib diisi.",
+    };
+  }
+
+  try {
+    const booking = await createBooking({
+      courtId,
+      startTime: new Date(startTime).toISOString(),
+      endTime: new Date(endTime).toISOString(),
+    });
+
+    return {
+      success: true,
+      booking,
+    };
+  } catch (error) {
+    return {
+      error: error instanceof Error ? error.message : "Gagal membuat booking.",
+    };
+  }
 }

@@ -1,7 +1,17 @@
-import { Link, Outlet } from "react-router";
+import Cookies from "js-cookie";
+import { Link, Outlet, useNavigate } from "react-router";
 
 export default function LayoutMain() {
   const year = new Date().getFullYear();
+  const navigate = useNavigate();
+
+  const token = Cookies.get("token");
+  const isLoggedIn = Boolean(token);
+
+  function handleLogout() {
+    Cookies.remove("token");
+    navigate("/login");
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -32,22 +42,40 @@ export default function LayoutMain() {
               </Link>
             </li>
 
-            <li>
-              <Link
-                to="/booking"
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Booking
-              </Link>
-            </li>
+            {isLoggedIn && (
+              <li>
+                <Link
+                  to="/dashboard"
+                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  Dashboard
+                </Link>
+              </li>
+            )}
 
             <li className="ml-auto">
-              <Link
-                to="/login"
-                className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Login
-              </Link>
+              {isLoggedIn ? (
+                <div className="flex items-center gap-4">
+                  <span className="text-sm text-muted-foreground">
+                    Logged in
+                  </span>
+
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="inline-flex h-9 items-center justify-center rounded-md border px-4 text-sm font-medium transition-colors hover:bg-muted"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/login"
+                  className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  Login
+                </Link>
+              )}
             </li>
           </ul>
         </div>
