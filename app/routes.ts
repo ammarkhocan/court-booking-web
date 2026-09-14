@@ -13,6 +13,7 @@ export default [
     route("/register", "routes/register.tsx"),
     route("/login", "routes/login.tsx"),
     route("/dashboard", "routes/dashboard.tsx"),
+    route("/bookings", "routes/bookings.tsx"),
 
     // route("/court", "routes/court.tsx"),
   ]),

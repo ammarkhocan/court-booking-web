@@ -53,6 +53,17 @@ export default function LayoutMain() {
               </li>
             )}
 
+            {isLoggedIn && (
+              <li>
+                <Link
+                  to="/bookings"
+                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  My Bookings
+                </Link>
+              </li>
+            )}
+
             <li className="ml-auto">
               {isLoggedIn ? (
                 <div className="flex items-center gap-4">
